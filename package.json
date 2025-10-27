@@ -1,0 +1,50 @@
+{
+  "name": "@ourfires/nextjs-gtm",
+  "version": "1.0.0",
+  "description": "GDPR-compliant Google Tag Manager for Next.js with consent management",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "peerDependencies": {
+    "next": ">=16.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "@next/third-parties": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "nextjs",
+    "next16",
+    "google-tag-manager",
+    "gtm",
+    "gdpr",
+    "consent",
+    "analytics"
+  ],
+  "author": "Ourfires",
+  "license": "MIT",
+  "homepage": "https://ourfires.co",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ourfires/nextjs-gtm"
+  }
+}
