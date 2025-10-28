@@ -17,7 +17,8 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "publish": "npm run build && npm publish --access public"
   },
   "peerDependencies": {
     "next": ">=16.0.0",
@@ -45,6 +46,6 @@
   "homepage": "https://ourfires.co",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ourfires/nextjs-gtm"
+    "url": "git+https:://github.com/ourfires/nextjs-gtm"
   }
 }
