@@ -137,6 +137,8 @@ export const REGULATED_REGIONS = {
  * Handles both country-level regulations (GDPR, LGPD, PIPEDA, POPIA)
  * and region-level regulations (CCPA/CPRA for California)
  *
+ * **Privacy-first default:** Returns `true` when country is undefined (local dev, VPN, errors)
+ *
  * @param country - ISO 3166-1 alpha-2 country code (e.g., 'US', 'BR', 'CA')
  * @param region - Region/state code (e.g., 'CA' for California)
  * @returns true if consent is required, false otherwise
@@ -144,7 +146,7 @@ export const REGULATED_REGIONS = {
  * @example
  * ```typescript
  * // In middleware.ts
- * import { isRegulatedRegion } from '@ourfires/nextjs-gtm';
+ * import { isRegulatedRegion } from '@ourfires/nextjs-gtm/server';
  *
  * export function middleware(request: NextRequest) {
  *   const needsConsent = isRegulatedRegion(
@@ -159,7 +161,8 @@ export const REGULATED_REGIONS = {
  * ```
  */
 export function isRegulatedRegion(country?: string, region?: string): boolean {
-  if (!country) return false;
+  // Privacy-first: require consent when geo data is unavailable
+  if (!country) return true;
 
   // Check country-level regulations
   if (ALL_REGULATED_COUNTRIES.includes(country as any)) {

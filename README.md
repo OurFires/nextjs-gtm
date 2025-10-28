@@ -20,6 +20,21 @@ A lightweight, production-ready module for user consent compliant Google Tag Man
 npm install @ourfires/nextjs-gtm @next/third-parties
 ```
 
+## Package Exports
+
+This package provides two entry points:
+
+- **`@ourfires/nextjs-gtm`** - Main entry for client components (React components, hooks)
+- **`@ourfires/nextjs-gtm/server`** - Server-side utilities for middleware/proxy (geo utilities)
+
+```tsx
+// ✅ In client components (app/layout.tsx)
+import { GTMWithConsent, ConsentBanner, useConsent } from "@ourfires/nextjs-gtm";
+
+// ✅ In server code (middleware.ts)
+import { isRegulatedRegion } from "@ourfires/nextjs-gtm/server";
+```
+
 ## Quick Start
 
 ### 1. Create a consent manager instance
@@ -278,7 +293,7 @@ Show the consent banner only to visitors from regions with privacy regulations (
 // middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { isRegulatedRegion } from "@ourfires/nextjs-gtm";
+import { isRegulatedRegion } from "@ourfires/nextjs-gtm/server";
 
 // Extend NextRequest to include Vercel's geo property
 interface NextRequestWithGeo extends NextRequest {
@@ -304,6 +319,8 @@ export function middleware(request: NextRequestWithGeo) {
   return response;
 }
 ```
+
+> **Important:** Use `@ourfires/nextjs-gtm/server` import for middleware/server-side code. The main `@ourfires/nextjs-gtm` import is for client components only.
 
 **2. Enable `geoAware` prop in your layout:**
 

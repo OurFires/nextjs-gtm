@@ -1,3 +1,4 @@
+"use client";
 /**
  * @ourfires/nextjs-gtm
  *
