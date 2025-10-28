@@ -121,6 +121,8 @@ export interface ConsentBannerProps {
   consentManager: ConsentManager;
   /** Configuration options */
   config?: ConsentConfig;
+  /** Enable geo-aware consent (only show banner in regulated regions) */
+  geoAware?: boolean;
 }
 
 /**

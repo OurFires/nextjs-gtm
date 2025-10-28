@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ConsentBannerProps, ConsentState, Translations } from "./types";
+import { checkGeoConsent } from "./geo-utils";
 
 /**
  * Default English translations for the consent banner
@@ -59,6 +60,7 @@ const defaultTranslations: Translations = {
  *             theme: "dark",
  *             position: "bottom"
  *           }}
+ *           geoAware={true}
  *         />
  *       </body>
  *     </html>
@@ -69,6 +71,7 @@ const defaultTranslations: Translations = {
 export function ConsentBanner({
   consentManager,
   config = {},
+  geoAware = false,
 }: ConsentBannerProps) {
   const [visible, setVisible] = useState<boolean>(false);
   const [showPreferences, setShowPreferences] = useState<boolean>(
@@ -118,7 +121,15 @@ export function ConsentBanner({
   // Check if consent exists on mount
   useEffect(() => {
     const hasConsent = consentManager.hasConsent();
-    setVisible(!hasConsent);
+
+    if (geoAware) {
+      // Only show if: no consent exists AND user is in regulated region
+      const needsConsent = checkGeoConsent();
+      setVisible(!hasConsent && needsConsent);
+    } else {
+      // Default behavior: show if no consent exists
+      setVisible(!hasConsent);
+    }
 
     // If consent exists, load current preferences
     if (hasConsent) {
@@ -127,7 +138,7 @@ export function ConsentBanner({
         setPreferences(currentConsent);
       }
     }
-  }, [consentManager]);
+  }, [consentManager, geoAware]);
 
   // Handle accept all
   const handleAcceptAll = () => {

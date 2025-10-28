@@ -6,6 +6,7 @@ A lightweight, production-ready module for user consent compliant Google Tag Man
 
 - ✅ GDPR-compliant consent management
 - ✅ Google Consent Mode v2 support
+- ✅ Geo-aware consent (show banner only in regulated regions)
 - ✅ Integrates with Vercel's official GTM plugin
 - ✅ Fully customizable UI (colors, text, themes)
 - ✅ Light and dark theme support
@@ -264,6 +265,57 @@ const {
 ```
 
 ## Advanced Usage
+
+### Geo-Aware Consent (Only Show Banner in Regulated Regions)
+
+Show the consent banner only to visitors from regions with privacy regulations (GDPR, CCPA, LGPD, PIPEDA, POPIA). Requires Vercel or CloudFlare deployment.
+
+#### Setup (2 steps):
+
+**1. Create `middleware.ts` in your project root:**
+
+```tsx
+// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { isRegulatedRegion } from '@ourfires/nextjs-gtm';
+
+export function middleware(request: NextRequest) {
+  const needsConsent = isRegulatedRegion(
+    request.geo?.country,
+    request.geo?.region
+  );
+
+  const response = NextResponse.next();
+  response.cookies.set('geo-needs-consent', needsConsent ? '1' : '0', {
+    path: '/',        // Cookie available on all pages
+    maxAge: 86400,    // Cache for 24 hours (avoid geo check on every request)
+    sameSite: 'lax'   // Security: prevent CSRF attacks
+  });
+
+  return response;
+}
+```
+
+**2. Enable `geoAware` prop in your layout:**
+
+```tsx
+// app/layout.tsx
+<ConsentBanner
+  consentManager={consentManager}
+  config={{ privacyPolicyUrl: "/privacy" }}
+  geoAware={true}
+/>
+```
+
+**Covered regulations:**
+- ✅ **GDPR** - EU/EEA + UK (28 countries)
+- ✅ **CCPA/CPRA** - California, USA
+- ✅ **LGPD** - Brazil
+- ✅ **PIPEDA** - Canada
+- ✅ **POPIA** - South Africa
+
+**Platforms:** Vercel, CloudFlare Pages, or any platform providing `request.geo` headers.
 
 ### Programmatic Consent Control
 

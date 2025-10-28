@@ -15,6 +15,15 @@ export { GTMWithConsent } from "./gtm-with-consent";
 // Hooks
 export { useConsent } from "./use-consent";
 
+// Utilities
+export {
+  checkGeoConsent,
+  isRegulatedRegion,
+  REGULATED_COUNTRIES,
+  REGULATED_REGIONS,
+  ALL_REGULATED_COUNTRIES,
+} from "./geo-utils";
+
 // Types
 export type {
   ConsentState,
