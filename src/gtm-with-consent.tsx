@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { GDPRGoogleTagManager } from "./gdpr-google-tag-manager";
 import { ConsentBanner } from "./consent-banner";
+import { checkGeoConsent } from "./geo-utils";
 import type { ConsentManager, ConsentConfig } from "./types";
 
 /**
@@ -28,6 +30,8 @@ export interface GTMWithConsentProps {
   dataLayer?: Record<string, any>;
   /** Nonce for CSP */
   nonce?: string;
+  /** Enable geo-aware consent (only show banner and wait for consent in regulated regions) */
+  geoAware?: boolean;
 }
 
 /**
@@ -77,13 +81,29 @@ export function GTMWithConsent({
   preview,
   dataLayer,
   nonce,
+  geoAware = false,
 }: GTMWithConsentProps) {
+  const [shouldWaitForConsent, setShouldWaitForConsent] = useState<boolean>(waitForConsent);
+
+  useEffect(() => {
+    if (geoAware) {
+      // Check if user is in a regulated region
+      const needsConsent = checkGeoConsent();
+
+      // Only wait for consent if user is in a regulated region
+      setShouldWaitForConsent(needsConsent);
+    } else {
+      // Use the explicit waitForConsent prop value
+      setShouldWaitForConsent(waitForConsent);
+    }
+  }, [geoAware, waitForConsent]);
+
   return (
     <>
       <GDPRGoogleTagManager
         gtmId={gtmId}
         consentManager={consentManager}
-        waitForConsent={waitForConsent}
+        waitForConsent={shouldWaitForConsent}
         gtmScriptUrl={gtmScriptUrl}
         dataLayerName={dataLayerName}
         auth={auth}
@@ -91,7 +111,11 @@ export function GTMWithConsent({
         dataLayer={dataLayer}
         nonce={nonce}
       />
-      <ConsentBanner consentManager={consentManager} config={config} />
+      <ConsentBanner
+        consentManager={consentManager}
+        config={config}
+        geoAware={geoAware}
+      />
     </>
   );
 }

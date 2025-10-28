@@ -1,6 +1,6 @@
 {
   "name": "@ourfires/nextjs-gtm",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "GDPR-compliant Google Tag Manager for Next.js with consent management",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

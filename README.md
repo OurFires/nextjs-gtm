@@ -268,7 +268,7 @@ const {
 
 ### Geo-Aware Consent (Only Show Banner in Regulated Regions)
 
-Show the consent banner only to visitors from regions with privacy regulations (GDPR, CCPA, LGPD, PIPEDA, POPIA). Requires Vercel or CloudFlare deployment.
+Show the consent banner only to visitors from regions with privacy regulations (GDPR, CCPA, LGPD, PIPEDA, POPIA). For users outside regulated regions, GTM loads immediately without requiring consent. Requires Vercel or CloudFlare deployment.
 
 #### Setup (2 steps):
 
@@ -307,14 +307,37 @@ export function middleware(request: NextRequestWithGeo) {
 
 **2. Enable `geoAware` prop in your layout:**
 
+**Option A: Using `GTMWithConsent` (recommended):**
+
 ```tsx
 // app/layout.tsx
+<GTMWithConsent
+  gtmId="GTM-XXXXXX"
+  consentManager={consentManager}
+  config={{ privacyPolicyUrl: "/privacy" }}
+  geoAware={true}
+/>
+```
+
+**Option B: Using separate components:**
+
+```tsx
+// app/layout.tsx
+<GDPRGoogleTagManager
+  gtmId="GTM-XXXXXX"
+  consentManager={consentManager}
+  // waitForConsent will be determined by geo-location automatically
+/>
 <ConsentBanner
   consentManager={consentManager}
   config={{ privacyPolicyUrl: "/privacy" }}
   geoAware={true}
 />
 ```
+
+**How it works:**
+- **Regulated regions** (EU, California, Brazil, etc.): Banner shows, GTM waits for consent
+- **Non-regulated regions**: No banner, GTM loads immediately
 
 **Covered regulations:**
 
