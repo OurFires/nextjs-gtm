@@ -16,12 +16,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "publish": "npm run build && npm publish --access public"
   },
   "peerDependencies": {
-    "next": ">=16.0.0",
+    "next": ">=15.0.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
     "@next/third-parties": "*"
